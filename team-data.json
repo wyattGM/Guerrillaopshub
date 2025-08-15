@@ -1,0 +1,208 @@
+{
+  "inhouse": [
+    {
+      "id": 1,
+      "name": "Chris Taylor",
+      "role": "Administrator",
+      "emails": {
+        "guerrilla": "chris@guerrillafirm.com",
+        "shedgeek": "chris@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["operations management", "client relationships", "billing/invoicing", "project coordination"]
+    },
+    {
+      "id": 2,
+      "name": "Christian",
+      "role": "Technical Operations",
+      "emails": {
+        "guerrilla": "christian@guerrillafirm.com",
+        "shedgeek": "christian@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["full-stack development", "technical architecture", "seo", "conversion tracking"]
+    },
+    {
+      "id": 3,
+      "name": "Cord",
+      "role": "Brand Strategist",
+      "emails": {
+        "guerrilla": "cord@guerrillafirm.com",
+        "shedgeek": "cord@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["brand strategy", "creative direction", "marketing strategy", "brand positioning"]
+    },
+    {
+      "id": 4,
+      "name": "Dylan",
+      "role": "Executive",
+      "emails": {
+        "guerrilla": "dylan@guerrillafirm.com",
+        "shedgeek": "dylan@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["executive leadership", "business strategy", "client acquisition", "team management"]
+    },
+    {
+      "id": 5,
+      "name": "Nathaniel",
+      "role": "Graphic Designer",
+      "emails": {
+        "guerrilla": "nathaniel@guerrillafirm.com",
+        "shedgeek": "nathaniel@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["graphic design", "logo design", "brand identity", "visual design"]
+    },
+    {
+      "id": 6,
+      "name": "Nick",
+      "role": "Lead Video Production",
+      "emails": {
+        "guerrilla": "nick@guerrillafirm.com",
+        "shedgeek": "nick@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["video production", "video editing", "motion graphics", "content creation"]
+    },
+    {
+      "id": 7,
+      "name": "Wyatt",
+      "role": "Operations Manager",
+      "emails": {
+        "guerrilla": "wyatt@guerrillafirm.com",
+        "shedgeek": "wyatt@shedgeek.com"
+      },
+      "location": "",
+      "birthday": "",
+      "phone": "",
+      "notes": "",
+      "knowledgeTags": ["operations management", "client relationships", "billing/invoicing", "project coordination"]
+    }
+  ],
+  "contractors": [
+    {
+      "id": 9,
+      "name": "Adeel",
+      "role": "Graphic Designer",
+      "emails": {
+        "guerrilla": "adeel@guerrillafirm.com",
+        "shedgeek": "adeel@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["graphic design", "logo design", "brand identity", "visual design"]
+    },
+    {
+      "id": 10,
+      "name": "Hazel",
+      "role": "CRM Support",
+      "emails": {
+        "guerrilla": "hazel@guerrillafirm.com",
+        "shedgeek": "hazel@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["crm management", "client support", "data management", "customer service"]
+    },
+    {
+      "id": 11,
+      "name": "Mark",
+      "role": "Ad Strategist",
+      "emails": {
+        "guerrilla": "mark@guerrillafirm.com",
+        "shedgeek": "mark@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["meta ad management", "google ad management", "conversion tracking", "ppc optimization"]
+    },
+    {
+      "id": 12,
+      "name": "Nida",
+      "role": "Occasional Coder",
+      "emails": {
+        "guerrilla": "nida@guerrillafirm.com",
+        "shedgeek": "nida@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["coding", "web development", "technical support", "bug fixes"]
+    },
+    {
+      "id": 13,
+      "name": "Sam",
+      "role": "Occasional Coder",
+      "emails": {
+        "guerrilla": "sam@guerrillafirm.com",
+        "shedgeek": "sam@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["coding", "web development", "technical support", "bug fixes"]
+    },
+    {
+      "id": 14,
+      "name": "Shakeel",
+      "role": "Occasional Coder",
+      "emails": {
+        "guerrilla": "shakeel@guerrillafirm.com",
+        "shedgeek": "shakeel@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["coding", "web development", "technical support", "bug fixes"]
+    },
+    {
+      "id": 15,
+      "name": "Saba",
+      "role": "SEO",
+      "emails": {
+        "guerrilla": "saba@guerrillafirm.com",
+        "shedgeek": "saba@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["seo", "search optimization", "content strategy", "keyword research"]
+    },
+    {
+      "id": 16,
+      "name": "Zee",
+      "role": "Data Integration",
+      "emails": {
+        "guerrilla": "zee@guerrillafirm.com",
+        "shedgeek": "zee@shedgeek.com"
+      },
+      "location": "",
+      "whatsapp_groups": [],
+      "notes": "",
+      "knowledgeTags": ["data integration", "api development", "database management", "system integration"]
+    }
+  ]
+}

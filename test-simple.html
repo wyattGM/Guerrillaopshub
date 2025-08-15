@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test - Guerrilla Command Post</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0f0f0f',
+                            primary: '#DEB226',
+                            secondary: '#D36B00',
+                            layer1: '#1a1a1a',
+                            layer2: '#242424',
+                            layer3: '#2d2d2d',
+                            layer4: '#383838',
+                            border: '#333333',
+                            lightBorder: '#404040',
+                            surface: '#1e1e1e',
+                            surfaceHover: '#262626'
+                        }
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="js/events.js?v=1.1"></script>
+    <script src="js/state.js?v=1.1"></script>
+</head>
+<body class="bg-brand-bg min-h-screen font-montserrat text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-brand-primary mb-8">Guerrilla Command Post - Test Page</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Basic Functionality Test -->
+            <div class="bg-brand-layer1 border border-brand-border rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-white mb-4">Basic Functionality</h2>
+                <div class="space-y-4">
+                    <button id="testEventBus" class="w-full px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        Test Event Bus
+                    </button>
+                    <button id="testStateManager" class="w-full px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        Test State Manager
+                    </button>
+                    <button id="testDataLoad" class="w-full px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        Test Data Loading
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div class="bg-brand-layer1 border border-brand-border rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-white mb-4">Test Results</h2>
+                <div id="testResults" class="space-y-4">
+                    <div id="eventBusResult" class="hidden p-3 bg-brand-layer2 rounded border border-brand-border">
+                        <h3 class="font-medium text-white mb-2">Event Bus Test</h3>
+                        <div class="text-sm text-gray-300"></div>
+                    </div>
+                    <div id="stateResult" class="hidden p-3 bg-brand-layer2 rounded border border-brand-border">
+                        <h3 class="font-medium text-white mb-2">State Manager Test</h3>
+                        <div class="text-sm text-gray-300"></div>
+                    </div>
+                    <div id="dataResult" class="hidden p-3 bg-brand-layer2 rounded border border-brand-border">
+                        <h3 class="font-medium text-white mb-2">Data Loading Test</h3>
+                        <div class="text-sm text-gray-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="mt-8 bg-brand-layer1 border border-brand-border rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Console Output</h2>
+            <div id="consoleOutput" class="bg-brand-bg border border-brand-border rounded p-4 h-64 overflow-y-auto font-mono text-sm text-gray-300">
+                <div>Console output will appear here...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Override console.log to capture output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleOutput = document.getElementById('consoleOutput');
+        
+        function addToConsole(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `mb-1 ${type === 'error' ? 'text-red-400' : 'text-gray-300'}`;
+            div.textContent = `[${type.toUpperCase()}] ${message}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+
+        // Test Event Bus
+        document.getElementById('testEventBus').addEventListener('click', () => {
+            console.log('Testing Event Bus...');
+            
+            try {
+                // Test event emission
+                emit('test-event', 'Hello from test!');
+                
+                // Test event listening
+                let received = false;
+                on('test-event', (data) => {
+                    received = true;
+                    console.log('Event received:', data);
+                });
+                
+                // Emit again to trigger the listener
+                emit('test-event', 'Second test!');
+                
+                const resultDiv = document.getElementById('eventBusResult');
+                resultDiv.querySelector('div').textContent = received ? '✅ Event Bus working' : '❌ Event Bus failed';
+                resultDiv.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Event Bus test failed:', error);
+                const resultDiv = document.getElementById('eventBusResult');
+                resultDiv.querySelector('div').textContent = `❌ Error: ${error.message}`;
+                resultDiv.classList.remove('hidden');
+            }
+        });
+
+        // Test State Manager
+        document.getElementById('testStateManager').addEventListener('click', () => {
+            console.log('Testing State Manager...');
+            
+            try {
+                // Test setting and getting state
+                setState('test-key', 'test-value');
+                const retrieved = getState('test-key', 'default');
+                
+                const resultDiv = document.getElementById('stateResult');
+                resultDiv.querySelector('div').textContent = retrieved === 'test-value' ? '✅ State Manager working' : '❌ State Manager failed';
+                resultDiv.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('State Manager test failed:', error);
+                const resultDiv = document.getElementById('stateResult');
+                resultDiv.querySelector('div').textContent = `❌ Error: ${error.message}`;
+                resultDiv.classList.remove('hidden');
+            }
+        });
+
+        // Test Data Loading
+        document.getElementById('testDataLoad').addEventListener('click', async () => {
+            console.log('Testing Data Loading...');
+            
+            try {
+                // Test loading team data
+                const response = await fetch('./team-data.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Team data loaded:', data);
+                    
+                    const resultDiv = document.getElementById('dataResult');
+                    resultDiv.querySelector('div').textContent = `✅ Data loaded successfully (${data.inhouse?.length || 0} in-house members)`;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (error) {
+                console.error('Data loading test failed:', error);
+                const resultDiv = document.getElementById('dataResult');
+                resultDiv.querySelector('div').textContent = `❌ Error: ${error.message}`;
+                resultDiv.classList.remove('hidden');
+            }
+        });
+
+        // Initialize
+        console.log('Test page loaded successfully');
+        console.log('Event Bus available:', typeof window.emit === 'function');
+        console.log('State Manager available:', typeof window.setState === 'function');
+    </script>
+</body>
+</html>

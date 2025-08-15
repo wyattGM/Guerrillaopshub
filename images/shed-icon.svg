@@ -1,0 +1,24 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shed Roof -->
+  <path d="M4 8L12 2L20 8L18 8L18 18L6 18L6 8L4 8Z" fill="#8B4513"/>
+  
+  <!-- Shed Walls -->
+  <rect x="6" y="8" width="12" height="10" fill="#DEB226"/>
+  
+  <!-- Shed Door -->
+  <rect x="10" y="12" width="4" height="6" fill="#8B4513"/>
+  <circle cx="13" cy="15" r="0.5" fill="#DEB226"/>
+  
+  <!-- Shed Windows -->
+  <rect x="7" y="10" width="2" height="2" fill="#87CEEB"/>
+  <rect x="15" y="10" width="2" height="2" fill="#87CEEB"/>
+  
+  <!-- Shed Foundation -->
+  <rect x="5" y="18" width="14" height="1" fill="#696969"/>
+  
+  <!-- Chimney -->
+  <rect x="14" y="4" width="2" height="4" fill="#8B4513"/>
+  <rect x="13.5" y="3" width="3" height="1" fill="#696969"/>
+</svg>
+
+

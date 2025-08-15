@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.cache/
+coverage/
+
+# Logs
+*.log
+logs/
+
+# Env
+.env
+.env.*
+*.env.local
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+.venv/
+venv/
+
+# Misc
+*.local
+*.tmp
+Thumbs.db

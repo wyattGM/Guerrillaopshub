@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guerrilla Command Post</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0f0f0f',
+                            primary: '#DEB226',
+                            secondary: '#D36B00',
+                            layer1: '#1a1a1a',
+                            layer2: '#242424',
+                            layer3: '#2d2d2d',
+                            layer4: '#383838',
+                            border: '#333333',
+                            lightBorder: '#404040',
+                            surface: '#1e1e1e',
+                            surfaceHover: '#262626'
+                        }
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+            <script src="js/events.js?v=1.1"></script>
+        <script src="js/state.js?v=1.1"></script>
+        <style>
+            .settings-tab-content {
+                display: block;
+            }
+            .settings-tab-content.hidden {
+                display: none;
+            }
+        </style>
+</head>
+<body class="bg-brand-bg min-h-screen font-montserrat text-white overflow-hidden">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="fixed inset-0 bg-brand-bg z-50 flex items-center justify-center">
+        <div class="max-w-md w-full mx-4">
+            <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border p-8">
+                <!-- Logo/Header -->
+                <div class="text-center mb-8">
+                    <div class="mb-4">
+                        <img src="images/logo.svg" alt="Guerrilla Ops Hub" class="h-16 mx-auto">
+                    </div>
+                    <h1 class="text-3xl font-bold mb-2">
+                        <span class="text-brand-primary">Guerrilla</span>
+                        <span class="text-white">Ops Hub</span>
+                    </h1>
+                    <p class="text-gray-400 mb-2">Business Management Platform</p>
+                    <p class="text-gray-400">Sign in to continue</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Email</label>
+                        <input type="email" id="loginEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Password</label>
+                        <input type="password" id="loginPassword" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+
+                    <button type="submit" class="w-full px-4 py-3 bg-brand-primary text-black rounded-xl font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="mt-6 p-4 bg-brand-layer2 rounded-lg">
+                    <p class="text-xs text-gray-400 mb-2">Demo Credentials:</p>
+                    <div class="space-y-1">
+                        <div>
+                            <p class="text-xs text-gray-300">Admin: admin@guerrillafirm.com / admin123</p>
+                            <p class="text-xs text-gray-500">Full access to all features</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-300">Manager: manager@guerrillafirm.com / manager123</p>
+                            <p class="text-xs text-gray-500">Can edit team and clients, view training</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-300">User: user@guerrillafirm.com / user123</p>
+                            <p class="text-xs text-gray-500">Read-only access</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainApp" class="flex h-screen hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-80 bg-brand-layer1 border-r border-brand-border flex flex-col">
+            <!-- Header -->
+            <header class="p-6 border-b border-brand-border bg-brand-layer2">
+                <h1 class="text-xl font-bold mb-1 tracking-wide flex items-center">
+                    <img src="images/logo.svg" alt="Guerrilla Ops Hub" class="h-8 mr-3">
+                    <span class="text-brand-primary">Guerrilla Ops Hub</span>
+                </h1>
+                <p class="text-gray-400 text-sm">Business Management Platform</p>
+            </header>
+
+            <!-- Main Navigation -->
+            <nav class="flex-1 p-4">
+                <div class="space-y-2">
+                    <!-- Directory Dropdown -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-button w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white bg-brand-layer3 rounded-xl border border-brand-primary border-opacity-50 transition-all duration-200" data-section="directory">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                                Directory
+                            </div>
+                            <svg class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu mt-2 ml-4 space-y-1">
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="team-inhouse">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                In-House Team
+                            </button>
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="team-contractors">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Contractors
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Clients Dropdown -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-button w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-xl transition-all duration-200" data-section="clients">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                                Clients
+                            </div>
+                            <svg class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu mt-2 ml-4 space-y-1 hidden">
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="sg-clients">
+                                <img src="images/shed-icon.svg" alt="ShedGeek" class="w-4 h-4 mr-3">
+                                Shed Geek
+                            </button>
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="gm-clients">
+                                <img src="images/gorilla-icon.svg" alt="Guerrilla Marketing" class="w-4 h-4 mr-3">
+                                Guerrilla Marketing
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Jobs Section -->
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-button w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-xl transition-all duration-200" data-section="jobs">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                                Jobs
+                            </button>
+                        </button>
+                        <div class="nav-dropdown-menu mt-2 ml-4 space-y-1 hidden">
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="jobs-recurring">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Recurring
+                            </button>
+                            <button class="nav-sub-button w-full flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-brand-layer2 rounded-lg transition-all duration-200" data-section="jobs-onetime">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                One-Time
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- My Agenda -->
+                    <button class="main-nav-button w-full flex items-center px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-xl transition-all duration-200" data-section="my-agenda">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        Agenda
+                    </button>
+
+
+
+                    <!-- Training -->
+                    <button class="main-nav-button w-full flex items-center px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-xl transition-all duration-200" data-section="training">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        Training
+                    </button>
+                </div>
+                
+                <!-- Settings at the bottom -->
+                <div class="mt-auto pt-4 border-t border-brand-border">
+                    <button class="main-nav-button w-full flex items-center px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-xl transition-all duration-200" data-section="settings">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Settings
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-brand-bg overflow-auto">
+            <!-- Top Bar with Logout -->
+            <div class="flex items-center justify-end p-4 border-b border-brand-border">
+                <button id="logoutBtn" class="flex items-center px-3 py-2 text-gray-400 hover:text-white hover:bg-brand-layer2 rounded-lg transition-colors duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+            
+            <div class="h-full flex flex-col">
+
+        <!-- Team Directory Section -->
+        <div id="teamSectionContent" class="section-content flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2">Team Directory</h1>
+                        <p class="text-gray-400">Manage your team members and contractors</p>
+                    </div>
+                    <button id="addTeamMemberBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Member
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Sub-Menu Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <!-- Team Type Selector -->
+                <div class="flex">
+                    <button 
+                        id="inHouseTab"
+                        class="team-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black"
+                        data-tab="inhouse"
+                    >
+                        In-House
+                    </button>
+                    <button 
+                        id="contractorsTab"
+                        class="team-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1"
+                        data-tab="contractors"
+                    >
+                        Contractors
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative max-w-lg">
+                    <input 
+                        type="text" 
+                        id="teamSearchInput"
+                        placeholder="Search team..."
+                        class="px-4 py-2 pl-10 pr-4 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members Container -->
+            <div id="teamContainer" class="space-y-3">
+                <!-- Team member cards will be inserted here -->
+            </div>
+
+            <!-- Team Loading State -->
+            <div id="teamLoadingState" class="text-center py-16">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary"></div>
+                <p class="mt-4 text-gray-300 font-medium">Loading team members...</p>
+            </div>
+
+            <!-- Team No Results State -->
+            <div id="teamNoResults" class="text-center py-16 hidden">
+                <svg class="mx-auto h-16 w-16 text-brand-lightBorder mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-white mb-2">No team members found</h3>
+                <p class="text-gray-400">Try adjusting your search criteria.</p>
+            </div>
+        </div>
+
+        <!-- GM Clients Section -->
+        <div id="gmClientsSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2 flex items-center">
+                    <img src="images/gorilla-icon.svg" alt="Guerrilla Marketing" class="w-8 h-8 mr-3">
+                    Guerrilla Marketing Clients
+                </h1>
+                        <p class="text-gray-400">Manage your GM client relationships</p>
+                    </div>
+                    <button id="addGMClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <img src="images/gorilla-icon.svg" alt="Guerrilla Marketing" class="w-4 h-4 mr-2">
+                        Add Client
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Sub-Menu Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <!-- Client Status Selector -->
+                <div class="flex">
+                    <button 
+                        id="gmCurrentTab"
+                        class="gm-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black"
+                        data-tab="current"
+                    >
+                        Current
+                    </button>
+                    <button 
+                        id="gmPastTab"
+                        class="gm-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1"
+                        data-tab="past"
+                    >
+                        Past
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative max-w-lg">
+                    <input 
+                        type="text" 
+                        id="gmClientsSearchInput"
+                        placeholder="Search clients..."
+                        class="px-4 py-2 pl-10 pr-4 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+                
+            <div id="gmClientsContainer" class="space-y-3">
+                <!-- GM Client cards will be inserted here -->
+            </div>
+        </div>
+
+        <!-- SG Clients Section -->
+        <div id="sgClientsSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2 flex items-center">
+                            <img src="images/shed-icon.svg" alt="ShedGeek" class="w-8 h-8 mr-3">
+                            Shed Geek Marketing Clients
+                        </h1>
+                        <p class="text-gray-400">Manage your Shed Geek client relationships</p>
+                    </div>
+                    <button id="addSGClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <img src="images/shed-icon.svg" alt="ShedGeek" class="w-4 h-4 mr-2">
+                        Add Client
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Sub-Menu Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <!-- Client Status Selector -->
+                <div class="flex">
+                    <button 
+                        id="sgCurrentTab"
+                        class="sg-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black"
+                        data-tab="current"
+                    >
+                        Current
+                    </button>
+                    <button 
+                        id="sgPastTab"
+                        class="sg-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1"
+                        data-tab="past"
+                    >
+                        Past
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative max-w-lg">
+                    <input 
+                        type="text" 
+                        id="sgClientsSearchInput"
+                        placeholder="Search clients..."
+                        class="px-4 py-2 pl-10 pr-4 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+                
+            <div id="sgClientsContainer" class="space-y-3">
+                <!-- SG Client cards will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Training Section -->
+        <div id="trainingSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2">Training Materials</h1>
+                        <p class="text-gray-400">Access training resources and documentation</p>
+                    </div>
+                    <button id="addTrainingBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Material
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Sub-Menu Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <!-- Training Categories -->
+                <div class="flex flex-wrap gap-1">
+                    <button class="training-category-button px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black" data-category="all">All</button>
+                    <button class="training-category-button px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="crm">CRM</button>
+                    <button class="training-category-button px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="meta">Meta</button>
+                    <div class="relative">
+                        <button class="training-folder-button px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 flex items-center" data-folder="google">
+                            Google
+                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="googleSubmenu" class="absolute top-full left-0 mt-1 bg-brand-layer2 border border-brand-border rounded-lg shadow-lg p-1 space-y-1 hidden z-10 min-w-48">
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="search-console">Search Console</button>
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="ads">Ads</button>
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="local-service-ads">Local Service Ads</button>
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="business-profile">Business Profile</button>
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="tag-manager">Tag Manager</button>
+                            <button class="training-category-button w-full text-left px-3 py-2 text-xs rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3" data-category="analytics">Analytics</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative max-w-lg">
+                    <input 
+                        type="text" 
+                        id="trainingSearchInput"
+                        placeholder="Search training..."
+                        class="px-4 py-2 pl-10 pr-4 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="trainingContainer" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Training materials will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Jobs Recurring Section -->
+        <div id="jobsRecurringSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2">Recurring Jobs</h1>
+                        <p class="text-gray-400">Manage ongoing client projects and tasks</p>
+                    </div>
+                    <button id="addRecurringJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Job
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <div class="flex space-x-2">
+                    <input 
+                        type="text" 
+                        id="recurringJobsSearchInput"
+                        placeholder="Search jobs..."
+                        class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <select id="recurringJobsClientFilter" class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">All Clients</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="recurringJobsContainer" class="space-y-4">
+                <!-- Recurring jobs will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Jobs One-Time Section -->
+        <div id="jobsOnetimeSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2">One-Time Jobs</h1>
+                        <p class="text-gray-400">Manage single client projects and tasks</p>
+                    </div>
+                    <button id="addOnetimeJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Job
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="mb-6 flex items-center justify-between bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <div class="flex space-x-2">
+                    <input 
+                        type="text" 
+                        id="onetimeJobsSearchInput"
+                        placeholder="Search jobs..."
+                        class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                    <select id="onetimeJobsClientFilter" class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">All Clients</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="onetimeJobsContainer" class="space-y-4">
+                <!-- One-time jobs will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-white mb-2">Settings</h1>
+                        <p class="text-gray-400">Manage your profile, notifications, and integrations</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="mb-6 flex items-center bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black" data-tab="profile">
+                    Profile
+                </button>
+                <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="notifications">
+                    Notifications
+                </button>
+                <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="integrations">
+                    Integrations
+                </button>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profileTab" class="settings-tab-content">
+                <div class="max-w-2xl">
+                    <h2 class="text-lg font-semibold text-white mb-4">Profile Settings</h2>
+                    <form id="profileForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Name</label>
+                                <input type="text" id="profileName" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Role</label>
+                                <input type="text" id="profileRole" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Email</label>
+                                <input type="email" id="profileEmail" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Phone</label>
+                                <input type="tel" id="profilePhone" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Location</label>
+                            <input type="text" id="profileLocation" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                            <textarea id="profileNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Save Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div id="notificationsTab" class="settings-tab-content hidden">
+                <div class="max-w-2xl">
+                    <h2 class="text-lg font-semibold text-white mb-4">Notification Preferences</h2>
+                    <form id="notificationsForm" class="space-y-4">
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="taskAdded" class="mr-3 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                <span class="text-white">Task Added (immediate)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="taskOverdue" class="mr-3 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                <span class="text-white">Task Overdue (immediate)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="dailySummary" checked class="mr-3 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                <span class="text-white">Daily Summary (required)</span>
+                            </label>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Save Preferences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Integrations Tab -->
+            <div id="integrationsTab" class="settings-tab-content hidden">
+                <div class="max-w-4xl space-y-6">
+                    <!-- Gmail Integration -->
+                    <div class="bg-brand-layer2 border border-brand-border rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">Gmail Integration</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Connected Email</label>
+                                <input type="email" id="gmailEmail" placeholder="Enter Gmail address" class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <button id="connectGmailBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Connect Gmail
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Webhooks -->
+                    <div class="bg-brand-layer2 border border-brand-border rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">Webhook Integrations</h3>
+                        
+                        <!-- Inbound Webhooks -->
+                        <div class="mb-6">
+                            <h4 class="text-md font-semibold text-white mb-3">Inbound Webhooks</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-white mb-2">Inbound Webhook URL</label>
+                                    <input type="url" id="inboundWebhookUrl" placeholder="https://..." class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-white mb-2">Reference Payload (JSON)</label>
+                                    <textarea id="referencePayload" rows="4" placeholder='{"example": "payload"}' class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-white mb-2">Field Mappings</label>
+                                    <div id="fieldMappings" class="space-y-2">
+                                        <div class="flex space-x-2">
+                                            <input type="text" placeholder="Incoming field" class="flex-1 px-3 py-2 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                            <input type="text" placeholder="App field" class="flex-1 px-3 py-2 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                            <button type="button" class="removeMappingBtn px-2 py-2 text-red-400 hover:text-red-300">×</button>
+                                        </div>
+                                    </div>
+                                    <button id="addMappingBtn" class="mt-2 px-3 py-1 text-sm bg-brand-layer3 text-white rounded border border-brand-border hover:bg-brand-layer4">
+                                        + Add Mapping
+                                    </button>
+                                </div>
+                                <button id="processSamplePayloadBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                    Process Sample Payload
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Outbound Webhooks -->
+                        <div>
+                            <h4 class="text-md font-semibold text-white mb-3">Outbound Webhooks</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-white mb-2">Webhook URLs</label>
+                                    <div id="outboundWebhookUrls" class="space-y-2">
+                                        <div class="flex space-x-2">
+                                            <input type="url" placeholder="https://..." class="flex-1 px-3 py-2 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                            <button type="button" class="removeWebhookBtn px-2 py-2 text-red-400 hover:text-red-300">×</button>
+                                        </div>
+                                    </div>
+                                    <button id="addWebhookBtn" class="mt-2 px-3 py-1 text-sm bg-brand-layer3 text-white rounded border border-brand-border hover:bg-brand-layer4">
+                                        + Add Webhook URL
+                                    </button>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-white mb-2">Triggers</label>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="triggerTaskCompleted" class="mr-2 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                            <span class="text-white text-sm">Task Completed</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="triggerTaskInProgress" class="mr-2 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                            <span class="text-sm text-white">Task In Progress</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="triggerTaskOverdue" class="mr-2 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                            <span class="text-sm text-white">Task Overdue</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="triggerJobInProgress" class="mr-2 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                            <span class="text-sm text-white">Job In Progress</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="triggerJobNeedsAssistance" class="mr-2 rounded border-brand-border text-brand-primary focus:ring-brand-primary">
+                                            <span class="text-sm text-white">Job Needs Assistance</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button id="testWebhooksBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                    Test Webhooks
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Agenda Section -->
+        <div id="myAgendaSectionContent" class="section-content hidden flex-1 p-8">
+            <!-- Page Header -->
+            <div class="mb-6 border-b border-brand-border pb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                                        <h1 class="text-2xl font-semibold text-white mb-2">Today's Top Priorities</h1>
+                <p class="text-gray-400">Manage your daily priorities and assigned accounts</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="refreshDataBtn" class="px-4 py-2 bg-brand-layer2 text-white border border-brand-border rounded-lg font-medium hover:bg-brand-layer3 transition-colors duration-200">
+                            Refresh Data
+                        </button>
+                        <button id="addTaskBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add a Task
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mb-6 flex items-center bg-brand-layer1 border border-brand-border rounded-lg p-1">
+                <button class="agenda-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black" data-tab="daily-priorities">
+                    Today's Top Priorities
+                </button>
+                <button class="agenda-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="accounts">
+                    My Accounts
+                </button>
+                <button class="agenda-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="tasks">
+                    My Tasks
+                </button>
+                <button class="agenda-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="jobs">
+                    My Jobs
+                </button>
+            </div>
+
+            <!-- Daily Priorities Tab -->
+            <div id="dailyPrioritiesTab" class="agenda-tab-content">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white">Today's Daily Priorities</h2>
+                    <button id="markTaskAsPriorityBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        Mark Task as Priority
+                    </button>
+                </div>
+                
+                <!-- Daily Priorities List -->
+                <div id="dailyPrioritiesList" class="space-y-4 mb-8">
+                    <!-- Daily priorities will be inserted here -->
+                </div>
+                
+                <!-- Suggested Priorities Section -->
+                <div id="suggestedPrioritiesSection" class="border-t border-brand-border pt-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Suggested Priorities</h3>
+                    <div id="suggestedPrioritiesList" class="space-y-3">
+                        <!-- Suggested priorities will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Accounts Tab -->
+            <div id="myAccountsTab" class="agenda-tab-content hidden">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white">Assigned Accounts</h2>
+                    <input 
+                        type="text" 
+                        id="myAccountsSearchInput"
+                        placeholder="Search accounts..."
+                        class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                </div>
+                <div id="myAccountsContainer" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- My accounts will be inserted here -->
+                </div>
+            </div>
+
+            <!-- My Tasks Tab -->
+            <div id="myTasksTab" class="agenda-tab-content hidden">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white">My Assigned Tasks</h2>
+                    <div class="flex space-x-2">
+                        <select id="myTasksPriorityFilter" class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary">
+                            <option value="">All Status</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="on_hold">On Hold</option>
+                            <option value="needs_help">Assistance Needed</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <select id="myTasksClientFilter" class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary">
+                            <option value="">All Clients</option>
+                        </select>
+                        <input 
+                            type="text" 
+                            id="myTasksSearchInput"
+                            placeholder="Search tasks..."
+                            class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                        >
+                    </div>
+                </div>
+                <div id="myTasksContainer" class="space-y-4">
+                    <!-- My tasks will be inserted here -->
+                </div>
+            </div>
+
+            <!-- My Jobs Tab -->
+            <div id="myJobsTab" class="agenda-tab-content hidden">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white">My Assigned Jobs</h2>
+                    <input 
+                        type="text" 
+                        id="myJobsSearchInput"
+                        placeholder="Search jobs..."
+                        class="px-4 py-2 text-white bg-brand-layer2 border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder-gray-400"
+                    >
+                </div>
+                <div id="myJobsContainer" class="space-y-4">
+                    <!-- My jobs will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit/Add Team Member Modal -->
+    <div id="editMemberModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="editModalTitle" class="text-2xl font-bold text-white">Add Team Member</h2>
+                    <button id="closeEditModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Edit Form -->
+                <form id="memberEditForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Name</label>
+                            <input type="text" id="editName" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Role -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Role</label>
+                            <input type="text" id="editRole" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Guerrilla Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Guerrilla Email</label>
+                            <input type="email" id="editGuerrillaEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Shed Geek Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Shed Geek Email</label>
+                            <input type="email" id="editShedGeekEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Location -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Location</label>
+                            <input type="text" id="editLocation" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Type</label>
+                            <select id="editType" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="inhouse">In-House</option>
+                                <option value="contractor">Contractor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Conditional Fields -->
+                    <div id="inHouseFields" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Birthday -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Birthday</label>
+                            <input type="date" id="editBirthday" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Phone -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Phone</label>
+                            <input type="tel" id="editPhone" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+
+                    <!-- Contractor Fields -->
+                    <div id="contractorFields" class="hidden">
+                        <label class="block text-sm font-medium text-white mb-2">WhatsApp Groups</label>
+                        <textarea id="editWhatsAppGroups" rows="3" placeholder="Enter WhatsApp groups, one per line" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                        <textarea id="editNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-between pt-6 border-t border-brand-border">
+                        <button type="button" id="deleteMemberBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 hidden">
+                            Delete Member
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelEditBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Save Member
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Add Client Modal -->
+    <div id="editClientModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="editClientModalTitle" class="text-2xl font-bold text-white">Add Client</h2>
+                    <button id="closeEditClientModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Edit Form -->
+                <form id="clientEditForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Company Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Company Name</label>
+                            <input type="text" id="editClientName" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Industry -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Industry</label>
+                            <input type="text" id="editClientIndustry" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Contact Person -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Contact Person</label>
+                            <input type="text" id="editClientContact" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Email</label>
+                            <input type="email" id="editClientEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Start Date -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Start Date</label>
+                            <input type="date" id="editClientStartDate" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Status</label>
+                            <select id="editClientStatus" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="current">Current</option>
+                                <option value="past">Past</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Services -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Services</label>
+                        <textarea id="editClientServices" rows="3" placeholder="Enter services, one per line" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                        <textarea id="editClientNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-between pt-6 border-t border-brand-border">
+                        <button type="button" id="deleteClientBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 hidden">
+                            Delete Client
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelEditClientBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Save Client
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Detail Modal -->
+    <div id="clientDetailModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="clientDetailModalTitle" class="text-2xl font-bold text-white">Client Details</h2>
+                    <button id="closeClientDetailModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Client Information Tabs -->
+                <div class="mb-6 flex items-center bg-brand-layer2 border border-brand-border rounded-lg p-1">
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 bg-brand-primary text-black" data-tab="overview">
+                        Overview
+                    </button>
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1" data-tab="contacts">
+                        Contacts
+                    </button>
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1" data-tab="jobs">
+                        Jobs
+                    </button>
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1" data-tab="account-management">
+                        Account Management
+                    </button>
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1" data-tab="notes">
+                        Notes
+                    </button>
+                    <button class="client-detail-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1" data-tab="meeting-transcriptions">
+                        Meeting Transcriptions
+                    </button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="clientOverviewTab" class="client-detail-tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4">Company Information</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Company Name</label>
+                                    <input type="text" id="clientDetailName" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Industry</label>
+                                    <input type="text" id="clientDetailIndustry" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Account Manager</label>
+                                    <select id="clientDetailAccountManager" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                        <option value="">Select Account Manager</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Status</label>
+                                    <select id="clientDetailStatus" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                        <option value="current">Current</option>
+                                        <option value="past">Past</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4">Contact Information</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Primary Contact</label>
+                                    <input type="text" id="clientDetailContact" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                                    <input type="email" id="clientDetailEmail" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Phone</label>
+                                    <input type="tel" id="clientDetailPhone" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Start Date</label>
+                                    <input type="date" id="clientDetailStartDate" class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">Quick Add Note</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Note</label>
+                                <textarea id="quickAddNote" rows="3" placeholder="Add a quick note..." class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary"></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button id="saveQuickNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                    Add Note
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+
+                <!-- Jobs Tab -->
+                <div id="clientJobsTab" class="client-detail-tab-content hidden">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-white">Client Jobs</h3>
+                        <button id="addClientJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            Add Job
+                        </button>
+                    </div>
+                    <div id="clientJobsContainer" class="space-y-4">
+                        <!-- Client jobs will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Contacts Tab -->
+                <div id="clientContactsTab" class="client-detail-tab-content hidden">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-white">Client Contacts</h3>
+                        <button id="addClientContactBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            Add Contact
+                        </button>
+                    </div>
+                    <div id="clientContactsContainer" class="space-y-4">
+                        <!-- Client contacts will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Account Management Tab -->
+                <div id="clientAccountManagementTab" class="client-detail-tab-content hidden">
+                    <!-- Services Section -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">Active Services</h3>
+                        <div id="clientServicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Service checkboxes will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Digital Assets -->
+                        <div>
+                            <div class="mb-4 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-white">Digital Assets</h3>
+                                <button id="addDigitalAssetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                    Add Asset
+                                </button>
+                            </div>
+                            <div id="digitalAssetsContainer" class="space-y-3">
+                                <!-- Digital assets will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Budgets for Active Services -->
+                        <div>
+                            <div class="mb-4 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-white">Budgets</h3>
+                                <button id="addBudgetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                    Add Budget
+                                </button>
+                            </div>
+                            <div id="budgetsContainer" class="space-y-3">
+                                <!-- Budgets will be inserted here -->
+                            </div>
+                            <div class="mt-4 p-3 bg-brand-layer2 rounded-lg">
+                                <div class="text-sm text-gray-400">Total Monthly Spend</div>
+                                <div id="totalMonthlySpend" class="text-xl font-bold text-white">$0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Tab -->
+                <div id="clientNotesTab" class="client-detail-tab-content hidden">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-white">All Notes</h3>
+                        <button id="addNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            Add Note
+                        </button>
+                    </div>
+                    <div id="notesContainer" class="space-y-4">
+                        <!-- Notes will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Meeting Transcriptions Tab -->
+                <div id="clientMeetingTranscriptionsTab" class="client-detail-tab-content hidden">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-white">Meeting Transcriptions</h3>
+                        <button id="addMeetingTranscriptionBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            Add Transcription
+                        </button>
+                    </div>
+                    <div id="meetingTranscriptionsContainer" class="space-y-4">
+                        <!-- Meeting transcriptions will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-between pt-6 border-t border-brand-border">
+                    <button type="button" id="deleteClientDetailBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 hidden">
+                        Delete Client
+                    </button>
+                    <div class="flex space-x-3">
+                        <button type="button" id="cancelClientDetailBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                            Cancel
+                        </button>
+                        <button type="button" id="saveClientDetailBtn" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Add Training Material Modal -->
+    <div id="editTrainingModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="editTrainingModalTitle" class="text-2xl font-bold text-white">Add Training Material</h2>
+                    <button id="closeEditTrainingModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Edit Form -->
+                <form id="trainingEditForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Title</label>
+                            <input type="text" id="editTrainingTitle" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Category</label>
+                            <select id="editTrainingCategory" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="crm">CRM</option>
+                                <option value="meta">Meta</option>
+                                <option value="search-console">Google Search Console</option>
+                                <option value="ads">Google Ads</option>
+                                <option value="local-service-ads">Local Service Ads</option>
+                                <option value="business-profile">Business Profile</option>
+                                <option value="tag-manager">Tag Manager</option>
+                                <option value="analytics">Analytics</option>
+                            </select>
+                        </div>
+
+                        <!-- Duration -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Duration</label>
+                            <input type="text" id="editTrainingDuration" placeholder="e.g., 45 minutes" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+
+                        <!-- Level -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Level</label>
+                            <select id="editTrainingLevel" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <!-- URL -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-white mb-2">URL</label>
+                            <input type="url" id="editTrainingUrl" placeholder="https://..." class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Description</label>
+                        <textarea id="editTrainingDescription" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Tags -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Tags</label>
+                        <textarea id="editTrainingTags" rows="2" placeholder="Enter tags, separated by commas" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-between pt-6 border-t border-brand-border">
+                        <button type="button" id="deleteTrainingBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 hidden">
+                            Delete Material
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelEditTrainingBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Save Material
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Member Modal -->
+    <div id="teamMemberModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex items-center">
+                        <div id="modalAvatar" class="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-brand-bg font-bold text-lg shadow-lg mr-4">
+                            <!-- Avatar initials will be inserted here -->
+                        </div>
+                        <div>
+                            <h2 id="modalName" class="text-2xl font-bold text-white"></h2>
+                            <p id="modalRole" class="text-brand-primary font-semibold text-lg"></p>
+                        </div>
+                    </div>
+                    <button id="closeModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="space-y-6">
+                    <!-- Contact Information -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            Contact Information
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div id="modalGuerrillaEmail" class="flex items-center text-sm text-gray-300">
+                                    <span class="font-medium text-white w-20">Guerrilla:</span>
+                                    <a href="#" class="text-brand-primary hover:text-brand-secondary transition-colors duration-200 hover:underline"></a>
+                                </div>
+                                <div id="modalShedGeekEmail" class="flex items-center text-sm text-gray-300">
+                                    <span class="font-medium text-white w-20">Shed Geek:</span>
+                                    <a href="#" class="text-brand-primary hover:text-brand-secondary transition-colors duration-200 hover:underline"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div id="modalAdditionalDetails">
+                        <!-- Location, birthday, phone, WhatsApp groups will be inserted here -->
+                    </div>
+
+                    <!-- Knowledge Tags -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                            </svg>
+                            Knowledge Tags
+                        </h3>
+                        <div id="modalTagsList" class="flex flex-wrap gap-2 mb-3">
+                            <!-- Tags chips inserted here -->
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input id="newTagInput" type="text" placeholder="Add a tag (e.g., seo, conversion)" class="flex-1 px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary">
+                            <button id="addTagBtn" class="px-3 py-2 bg-brand-primary text-black rounded-lg text-sm font-medium">Add</button>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div id="modalNotesSection" class="hidden">
+                        <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Notes
+                        </h3>
+                        <p id="modalNotes" class="text-gray-300 bg-brand-bg bg-opacity-50 p-4 rounded-lg italic"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Daily Priority Modal -->
+    <div id="addDailyPriorityModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Daily Priority</h2>
+                    <button id="closeAddDailyPriorityModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addDailyPriorityForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Search for Task</label>
+                        <input type="text" id="dailyPriorityTaskSearch" placeholder="Search tasks..." class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    
+                    <div id="dailyPriorityTaskSearchResults" class="space-y-2 max-h-40 overflow-y-auto">
+                        <!-- Search results will be inserted here -->
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Priority Date</label>
+                        <input type="date" id="dailyPriorityDate" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddDailyPriorityBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Priority
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Template Modal -->
+    <div id="taskTemplateModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="taskTemplateModalTitle" class="text-2xl font-bold text-white">Task Template</h2>
+                    <button id="closeTaskTemplateModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="taskTemplateForm" class="space-y-6">
+                    <div id="taskTemplateFields">
+                        <!-- Template fields will be inserted here -->
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelTaskTemplateBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Execute Template
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Digital Asset Modal -->
+    <div id="addDigitalAssetModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Digital Asset</h2>
+                    <button id="closeAddDigitalAssetModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addDigitalAssetForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Asset Type</label>
+                        <select id="assetType" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            <option value="">Select Asset Type</option>
+                            <option value="google_ads_account">Google Ads Account</option>
+                            <option value="google_business_profile">Google Business Profile</option>
+                            <option value="google_analytics_4">Google Analytics 4</option>
+                            <option value="meta_ads_account">Meta Ads Account</option>
+                            <option value="meta_pixel_or_dataset">Meta Pixel/Dataset</option>
+                            <option value="website_editor">Website Editor</option>
+                            <option value="website_hosting">Website Hosting</option>
+                            <option value="domain">Domain</option>
+                            <option value="crm">CRM</option>
+                            <option value="other_asset">Other Asset</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Asset Name</label>
+                        <input type="text" id="assetName" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        <p class="text-xs text-gray-400 mt-1">e.g., Google Ads Account — Rockwood SGM</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">External ID</label>
+                        <input type="text" id="assetExternalId" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Ownership</label>
+                            <select id="assetOwnership" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="ours">Ours</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Access Status</label>
+                            <select id="assetAccessStatus" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="active">Active</option>
+                                <option value="requested">Requested</option>
+                                <option value="revoked">Revoked</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                        <textarea id="assetNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddDigitalAssetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Asset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div id="addNoteModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Note</h2>
+                    <button id="closeAddNoteModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addNoteForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Note</label>
+                        <textarea id="noteBody" rows="6" required placeholder="Enter your note..." class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddNoteBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Note
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Meeting Transcription Modal -->
+    <div id="addMeetingTranscriptionModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Meeting Transcription</h2>
+                    <button id="closeAddMeetingTranscriptionModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addMeetingTranscriptionForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Source</label>
+                            <select id="transcriptionSource" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="manual">Manual</option>
+                                <option value="google_workspace" disabled>Google Workspace (Coming Soon)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Meeting Start</label>
+                            <input type="datetime-local" id="meetingStart" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Participants</label>
+                        <input type="text" id="participants" placeholder="Enter participant names, separated by commas" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Summary</label>
+                        <textarea id="meetingSummary" rows="3" placeholder="Brief summary of the meeting" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Action Items</label>
+                        <textarea id="actionItems" rows="3" placeholder="List action items from the meeting" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Full Transcript</label>
+                        <textarea id="transcriptText" rows="8" placeholder="Enter the full meeting transcript" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddMeetingTranscriptionBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Transcription
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add New Task</h2>
+                    <button id="closeAddTaskModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addTaskForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Task Title</label>
+                            <input type="text" id="taskTitle" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Client</label>
+                            <select id="taskClient" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="">Select Client</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Priority</label>
+                            <select id="taskPriority" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Due Date</label>
+                            <input type="date" id="taskDueDate" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Description</label>
+                        <textarea id="taskDescription" rows="4" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddTaskBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Task
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Task as Priority Modal -->
+    <div id="markTaskAsPriorityModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Mark Task as Priority</h2>
+                    <button id="closeMarkTaskAsPriorityModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="markTaskAsPriorityForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Search for Task</label>
+                        <input type="text" id="priorityTaskSearch" placeholder="Search tasks..." class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    
+                    <div id="priorityTaskSearchResults" class="space-y-2 max-h-40 overflow-y-auto">
+                        <!-- Search results will be inserted here -->
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Priority Date</label>
+                        <input type="date" id="priorityDate" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelMarkTaskAsPriorityBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Mark as Priority
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Recurring Job Modal -->
+    <div id="addRecurringJobModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Recurring Job</h2>
+                    <button id="closeAddRecurringJobModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addRecurringJobForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Job Title</label>
+                            <input type="text" id="recurringJobTitle" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Client</label>
+                            <select id="recurringJobClient" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="">Select Client</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Frequency</label>
+                            <select id="recurringJobFrequency" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Next Due Date</label>
+                            <input type="date" id="recurringJobNextDue" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Description</label>
+                        <textarea id="recurringJobDescription" rows="4" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddRecurringJobBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Job
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add One-Time Job Modal -->
+    <div id="addOnetimeJobModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add One-Time Job</h2>
+                    <button id="closeAddOnetimeJobModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addOnetimeJobForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Job Title</label>
+                            <input type="text" id="onetimeJobTitle" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Client</label>
+                            <select id="onetimeJobClient" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="">Select Client</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Status</label>
+                            <select id="onetimeJobStatus" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="on_hold">On Hold</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Due Date</label>
+                            <input type="date" id="onetimeJobDueDate" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Description</label>
+                        <textarea id="onetimeJobDescription" rows="4" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddOnetimeJobBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Job
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client 360 Drawer -->
+    <div id="client360Drawer" class="fixed inset-y-0 right-0 w-96 bg-brand-layer1 border-l border-brand-border transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+        <div class="h-full flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b border-brand-border bg-brand-layer2">
+                <div class="flex items-center justify-between">
+                    <h3 id="client360Title" class="text-lg font-semibold text-white">Client 360</h3>
+                    <button id="closeClient360Drawer" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <div id="client360Content">
+                    <!-- Client 360 content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toasts -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[9999] space-y-2 pointer-events-none"></div>
+
+            <script src="command-post.js?v=202408141720"></script>
+
+    <!-- Add Client Contact Modal -->
+    <div id="addClientContactModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Client Contact</h2>
+                    <button id="closeAddClientContactModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addClientContactForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Name</label>
+                            <input type="text" id="clientContactName" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Role</label>
+                            <input type="text" id="clientContactRole" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Email</label>
+                            <input type="email" id="clientContactEmail" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Phone</label>
+                            <input type="tel" id="clientContactPhone" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                        <textarea id="clientContactNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddClientContactBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Contact
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Digital Asset Modal -->
+    <div id="addDigitalAssetModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Digital Asset</h2>
+                    <button id="closeAddDigitalAssetModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addDigitalAssetForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Asset Name</label>
+                            <input type="text" id="digitalAssetName" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Asset Type</label>
+                            <select id="digitalAssetType" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="website">Website</option>
+                                <option value="social_media">Social Media</option>
+                                <option value="email">Email</option>
+                                <option value="advertising">Advertising</option>
+                                <option value="analytics">Analytics</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">URL</label>
+                            <input type="url" id="digitalAssetUrl" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Status</label>
+                            <select id="digitalAssetStatus" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Description</label>
+                        <textarea id="digitalAssetDescription" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddDigitalAssetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Asset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Budget Modal -->
+    <div id="addBudgetModal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-layer1 rounded-2xl shadow-2xl border border-brand-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Add Budget</h2>
+                    <button id="closeAddBudgetModal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form id="addBudgetForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Service</label>
+                            <select id="budgetService" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                <option value="">Select Service</option>
+                                <option value="google_ads">Google Ads</option>
+                                <option value="facebook_ads">Facebook Ads</option>
+                                <option value="seo">SEO</option>
+                                <option value="content_creation">Content Creation</option>
+                                <option value="social_media">Social Media Management</option>
+                                <option value="email_marketing">Email Marketing</option>
+                                <option value="analytics">Analytics & Reporting</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Monthly Budget</label>
+                            <input type="number" id="budgetAmount" required min="0" step="0.01" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Start Date</label>
+                            <input type="date" id="budgetStartDate" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">End Date</label>
+                            <input type="date" id="budgetEndDate" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Notes</label>
+                        <textarea id="budgetNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end pt-6 border-t border-brand-border">
+                        <div class="flex space-x-3">
+                            <button type="button" id="cancelAddBudgetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                Add Budget
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Recurring Job Modal -->
+</body>
+</html>
