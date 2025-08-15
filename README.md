@@ -1,3 +1,8 @@
+# Guerrillaopshub
+
+Ops Hub Repository
+
+<<<<<<< HEAD
 # 🦍 Guerrilla Ops Hub
 
 **The Ultimate Business Management Platform for Creative Agencies**
@@ -80,3 +85,9 @@ Built with modern web standards and designed for extensibility. All functions ar
 **Built with ❤️ for agencies that think outside the box**
 
 *Guerrilla Ops Hub - Where creativity meets efficiency*
+=======
+# Guerrillaopshub
+Ops Hub Repository
+>>>>>>> 0759eb81f3ae8f803512a436010b3615c494f2dc
+
+
