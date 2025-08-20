@@ -205,6 +205,7 @@ class GuerrillaCommandPost {
         this.setupSettingsEventListeners();
         this.setupSettingsFormListeners();
         this.setupModalCloseHandlers();
+        this.setupSidebarToggle();
         
         // Main navigation buttons (non-dropdown)
         document.querySelectorAll('.main-nav-button').forEach(button => {
@@ -543,6 +544,18 @@ class GuerrillaCommandPost {
             content.classList.add('hidden');
         });
         
+        // Close directory dropdown when leaving directory sections (unless going to another directory section)
+        if (!section.startsWith('team-') && this.currentSection && this.currentSection.startsWith('team-')) {
+            document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
+                menu.classList.add('hidden');
+                const arrow = menu.closest('.nav-dropdown').querySelector('.nav-dropdown-button svg:last-child');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            });
+        }
+        
+        // Setup sidebar toggle functionality if not already done
+        this.setupSidebarToggle();
+        
         // Update main navigation buttons and dropdown states
         document.querySelectorAll('.main-nav-button, .nav-dropdown-button').forEach(button => {
             const buttonSection = button.dataset.section;
@@ -553,7 +566,7 @@ class GuerrillaCommandPost {
             
             if (isActive) {
                 if (button.classList.contains('nav-dropdown-button')) {
-                    button.className = 'nav-dropdown-button w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white bg-brand-layer3 rounded-xl border border-brand-primary border-opacity-50 transition-all duration-200';
+                    button.className = 'nav-dropdown-button w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white bg-brand-layer3 rounded-xl border border-brand-primary border-opacity-50 transition-all duration-200 nav-active-glow';
                     // Keep dropdown open for active sections
                     const dropdown = button.closest('.nav-dropdown');
                     if (dropdown) {
@@ -563,7 +576,7 @@ class GuerrillaCommandPost {
                         if (arrow) arrow.style.transform = 'rotate(180deg)';
                     }
                 } else {
-                    button.className = 'main-nav-button w-full flex items-center px-4 py-3 text-sm font-medium text-white bg-brand-layer3 rounded-xl border border-brand-primary border-opacity-50 transition-all duration-200';
+                    button.className = 'main-nav-button w-full flex items-center px-4 py-3 text-sm font-medium text-white bg-brand-layer3 rounded-xl border border-brand-primary border-opacity-50 transition-all duration-200 nav-active-glow';
                 }
             } else {
                 if (button.classList.contains('nav-dropdown-button')) {
@@ -772,7 +785,7 @@ class GuerrillaCommandPost {
         card.innerHTML = `
             <div class="flex items-center py-4 px-6">
                 <!-- Avatar -->
-                <div class="w-10 h-10 bg-gradient-to-br from-brand-primary to-yellow-500 rounded-lg flex items-center justify-center text-black font-semibold text-sm mr-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-primary-dark rounded-lg flex items-center justify-center text-black font-semibold text-sm mr-4">
                     ${member.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 
@@ -848,7 +861,7 @@ class GuerrillaCommandPost {
                 <img src="${iconSrc}" alt="${iconAlt}" class="w-8 h-8 mr-3">
                 
                 <!-- Company Avatar -->
-                <div class="w-10 h-10 bg-gradient-to-br from-brand-primary to-yellow-500 rounded-lg flex items-center justify-center text-black font-semibold text-sm mr-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-primary-dark rounded-lg flex items-center justify-center text-black font-semibold text-sm mr-4">
                     ${client.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 
@@ -925,9 +938,9 @@ class GuerrillaCommandPost {
             'crm': 'bg-blue-500',
             'meta': 'bg-blue-600',
             'google-search-console': 'bg-red-500',
-            'google-ads': 'bg-yellow-500',
+            'google-ads': 'bg-orange-500',
             'local-service-ads': 'bg-green-500',
-            'business-profile': 'bg-purple-500',
+            'business-profile': 'bg-purple-700',
             'tag-manager': 'bg-indigo-500',
             'analytics': 'bg-pink-500'
         };
@@ -2097,6 +2110,7 @@ class GuerrillaCommandPost {
         document.getElementById('editRole').value = member.role || '';
         document.getElementById('editGuerrillaEmail').value = member.emails?.guerrilla || '';
         document.getElementById('editShedGeekEmail').value = member.emails?.shedgeek || '';
+        document.getElementById('editPersonalEmail').value = member.emails?.personal || '';
         document.getElementById('editLocation').value = member.location || '';
         document.getElementById('editNotes').value = member.notes || '';
         document.getElementById('editType').value = isInHouse ? 'inhouse' : 'contractor';
@@ -2114,6 +2128,27 @@ class GuerrillaCommandPost {
     clearForm() {
         document.getElementById('memberEditForm').reset();
         this.toggleFieldVisibility();
+        this.toggleAdminFields();
+    }
+
+    // Check if current user is admin (simplified check for now)
+    isCurrentUserAdmin() {
+        // For now, assume admin if localStorage has admin flag
+        // In production, this should be based on proper authentication
+        return localStorage.getItem('userRole') === 'admin' || localStorage.getItem('isAdmin') === 'true';
+    }
+
+    toggleAdminFields() {
+        const adminFields = document.querySelectorAll('.admin-only-field');
+        const isAdmin = this.isCurrentUserAdmin();
+        
+        adminFields.forEach(field => {
+            if (isAdmin) {
+                field.classList.remove('hidden-for-user');
+            } else {
+                field.classList.add('hidden-for-user');
+            }
+        });
     }
 
     toggleFieldVisibility() {
@@ -2138,7 +2173,8 @@ class GuerrillaCommandPost {
             role: document.getElementById('editRole').value,
             emails: {
                 guerrilla: document.getElementById('editGuerrillaEmail').value,
-                shedgeek: document.getElementById('editShedGeekEmail').value
+                shedgeek: document.getElementById('editShedGeekEmail').value,
+                personal: document.getElementById('editPersonalEmail').value
             },
             location: document.getElementById('editLocation').value,
             notes: document.getElementById('editNotes').value
@@ -2585,7 +2621,7 @@ class GuerrillaCommandPost {
             'active': 'bg-green-500',
             'in-progress': 'bg-blue-500',
             'completed': 'bg-gray-500',
-            'paused': 'bg-yellow-500'
+            'paused': 'bg-orange-500'
         };
 
         const statusColor = statusColors[job.status] || 'bg-gray-500';
@@ -2635,7 +2671,7 @@ class GuerrillaCommandPost {
                         ${job.tasks.map(task => {
                             const priorityColors = {
                                 'high': 'bg-red-500',
-                                'medium': 'bg-yellow-500',
+                                'medium': 'bg-orange-500',
                                 'low': 'bg-green-500'
                             };
                             const priorityColor = priorityColors[task.priority] || 'bg-gray-500';
@@ -2757,7 +2793,7 @@ class GuerrillaCommandPost {
                     <div class="flex items-center justify-end pt-6 border-t border-brand-border mt-6">
                         <div class="flex gap-3">
                             <button class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2" data-close-modal>Cancel</button>
-                            <button id="saveJobDetailBtn" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400">Save</button>
+                            <button id="saveJobDetailBtn" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark">Save</button>
                         </div>
                     </div>
                 </div>
@@ -3023,7 +3059,7 @@ class GuerrillaCommandPost {
 
         const priorityColors = {
             'high': 'bg-red-500',
-            'medium': 'bg-yellow-500',
+            'medium': 'bg-orange-500',
             'low': 'bg-green-500'
         };
 
@@ -3114,7 +3150,7 @@ class GuerrillaCommandPost {
             'active': 'bg-green-500',
             'in-progress': 'bg-blue-500',
             'completed': 'bg-gray-500',
-            'paused': 'bg-yellow-500'
+            'paused': 'bg-orange-500'
         };
 
         const statusColor = statusColors[job.status] || 'bg-gray-500';
@@ -3237,7 +3273,7 @@ class GuerrillaCommandPost {
             'active': 'bg-green-500',
             'in-progress': 'bg-blue-500',
             'completed': 'bg-gray-500',
-            'paused': 'bg-yellow-500'
+            'paused': 'bg-orange-500'
         };
 
         const statusColor = statusColors[job.status] || 'bg-gray-500';
@@ -4019,7 +4055,7 @@ class GuerrillaCommandPost {
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-white">Digital Assets</h3>
-                        <button id="addDigitalAssetBtn" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addDigitalAssetBtn" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             + Add Asset
                         </button>
                     </div>
@@ -4032,7 +4068,7 @@ class GuerrillaCommandPost {
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-white">Budgets</h3>
-                        <button id="addBudgetBtn" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addBudgetBtn" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             + Add Budget
                         </button>
                     </div>
@@ -4078,13 +4114,13 @@ class GuerrillaCommandPost {
         
         const statusColors = {
             'active': 'bg-green-500',
-            'requested': 'bg-yellow-500',
+            'requested': 'bg-orange-500',
             'revoked': 'bg-red-500'
         };
         
         const ownershipColors = {
             'ours': 'bg-blue-500',
-            'client': 'bg-purple-500'
+            'client': 'bg-purple-700'
         };
         
         div.innerHTML = `
@@ -4182,7 +4218,7 @@ class GuerrillaCommandPost {
                     ${asset.notes ? `<div class="text-sm text-gray-400">Notes</div><div class="text-white">${asset.notes}</div>` : ''}
                 </div>
                 <div class="p-4 border-t border-brand-border flex justify-end">
-                    <button class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200" id="closeDigitalAssetDrawerBtn2">Close</button>
+                    <button class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200" id="closeDigitalAssetDrawerBtn2">Close</button>
                 </div>
             </div>
         `;
@@ -4237,7 +4273,7 @@ class GuerrillaCommandPost {
                         <div class="text-right">
                             <div class="text-lg font-bold text-white">$${budget?.monthlyAmount?.toLocaleString() || '0'}/month</div>
                             ${isActive ? 
-                                `<button onclick="guerrillaCommandPost.updateBudget('${serviceName}', ${budget?.monthlyAmount || 0})" class="text-xs text-brand-primary hover:text-yellow-400">Update</button>` :
+                                `<button onclick="guerrillaCommandPost.updateBudget('${serviceName}', ${budget?.monthlyAmount || 0})" class="text-xs text-brand-primary hover:text-brand-primary">Update</button>` :
                                 `<button onclick="guerrillaCommandPost.activateService('${serviceName}')" class="text-xs text-green-400 hover:text-green-300">Activate</button>`
                             }
                         </div>
@@ -4340,7 +4376,7 @@ class GuerrillaCommandPost {
                         <button type="button" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200" onclick="this.closest('.fixed').remove()">
                             Cancel
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Asset
                         </button>
                     </div>
@@ -4389,7 +4425,7 @@ class GuerrillaCommandPost {
                         <button type="button" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200" onclick="this.closest('.fixed').remove()">
                             Cancel
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Budget
                         </button>
                     </div>
@@ -5027,7 +5063,7 @@ class GuerrillaCommandPost {
                             <button type="button" id="cancelAddClientJobBtn" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Job
                             </button>
                         </div>
@@ -5094,7 +5130,7 @@ class GuerrillaCommandPost {
                             <button type="button" id="cancelAddClientContactBtn" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Contact
                             </button>
                         </div>
@@ -5168,7 +5204,7 @@ class GuerrillaCommandPost {
                         </div>
                         
                         <div class="flex justify-end space-x-3 pt-4 border-t border-brand-border">
-                            <button type="button" id="cancelAddRecurringJobBtn" class="px-4 py-2 text-gray-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="button" id="cancelAddRecurringJobBtn" class="px-4 py-2 text-gray-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Recurring Job
                             </button>
                         </div>
@@ -5239,7 +5275,7 @@ class GuerrillaCommandPost {
                             <button type="button" id="cancelAddOnetimeJobBtn" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add One-time Job
                             </button>
                         </div>
@@ -5335,6 +5371,9 @@ class GuerrillaCommandPost {
             title: document.getElementById('recurringJobTitle').value,
             clientId: document.getElementById('recurringJobClient').value,
             frequency: document.getElementById('recurringJobFrequency').value,
+            startDate: document.getElementById('recurringJobStartDate').value,
+            endDate: document.getElementById('recurringJobEndDate').value,
+            nextDue: document.getElementById('recurringJobNextDue').value,
             description: document.getElementById('recurringJobDescription').value
         };
         
@@ -5342,7 +5381,6 @@ class GuerrillaCommandPost {
             id: Date.now(),
             ...formData,
             status: 'active',
-            nextDue: new Date().toISOString().split('T')[0],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -5861,7 +5899,7 @@ class GuerrillaCommandPost {
         const priorityColors = {
             'critical': 'bg-red-600',
             'high': 'bg-red-500',
-            'medium': 'bg-yellow-500',
+            'medium': 'bg-orange-500',
             'low': 'bg-green-500'
         };
         
@@ -5913,7 +5951,7 @@ class GuerrillaCommandPost {
         const priorityColors = {
             'critical': 'bg-red-600',
             'high': 'bg-red-500',
-            'medium': 'bg-yellow-500',
+            'medium': 'bg-orange-500',
             'low': 'bg-green-500'
         };
         
@@ -5927,7 +5965,7 @@ class GuerrillaCommandPost {
                     </span>
                     ${isOverdue ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-600 text-white">Overdue</span>' : ''}
                 </div>
-                <button onclick="guerrillaCommandPost.markTaskAsPriority(${task.id})" class="text-brand-primary hover:text-yellow-400">
+                <button onclick="guerrillaCommandPost.markTaskAsPriority(${task.id})" class="text-brand-primary hover:text-brand-primary">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -6076,7 +6114,7 @@ class GuerrillaCommandPost {
                             <button id="closeTaskModal2" class="px-4 py-2 text-gray-400 hover:text-white transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button id="submitTaskBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button id="submitTaskBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Create Task
                             </button>
                         </div>
@@ -6360,7 +6398,7 @@ class GuerrillaCommandPost {
             const priorityColors = {
                 'critical': 'bg-red-600',
                 'high': 'bg-red-500',
-                'medium': 'bg-yellow-500',
+                'medium': 'bg-orange-500',
                 'low': 'bg-green-500'
             };
             
@@ -6377,7 +6415,7 @@ class GuerrillaCommandPost {
                         <p class="text-sm text-gray-300">${this.getClientName(task.clientId) || 'No Client'}${task.jobId ? ` - ${this.getJobTitle(task.jobId)}` : ''}</p>
                         ${task.dueDate ? `<p class="text-xs text-gray-400 mt-1">Due: ${task.dueDate}</p>` : ''}
                     </div>
-                    <button onclick="guerrillaCommandPost.selectExistingTask(${task.id})" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-yellow-400 transition-colors duration-200">
+                    <button onclick="guerrillaCommandPost.selectExistingTask(${task.id})" class="px-3 py-1 bg-brand-primary text-black rounded text-sm font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                         Select
                     </button>
                 </div>
@@ -6467,7 +6505,7 @@ class GuerrillaCommandPost {
                     <p class="text-sm text-gray-300">You can also create new tasks using the "Add Task" button above.</p>
                 </div>
                 <div class="flex justify-end pt-4">
-                    <button class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200" onclick="this.closest('.fixed').remove()">
+                    <button class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200" onclick="this.closest('.fixed').remove()">
                         Got It!
                     </button>
                 </div>
@@ -6615,7 +6653,7 @@ class GuerrillaCommandPost {
             });
             
             if (allTasks.length > 0) {
-                const priorityColors = { critical: 'bg-red-600', high: 'bg-red-500', medium: 'bg-yellow-500', low: 'bg-green-500' };
+                const priorityColors = { critical: 'bg-red-600', high: 'bg-red-500', medium: 'bg-orange-500', low: 'bg-green-500' };
                 tasksContainer.innerHTML = allTasks.map(task => `
                     <div class="p-3 bg-brand-layer2 border border-brand-border rounded-lg">
                         <div class="flex items-center justify-between mb-1">
@@ -6938,13 +6976,49 @@ class GuerrillaCommandPost {
         }
     }
 
+    // Sidebar Toggle Functionality
+    setupSidebarToggle() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (!sidebarToggle || !sidebar) return;
+        
+        // Remove existing listeners to prevent duplicates
+        sidebarToggle.replaceWith(sidebarToggle.cloneNode(true));
+        const newToggle = document.getElementById('sidebarToggle');
+        
+        newToggle.addEventListener('click', () => {
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            
+            if (isCollapsed) {
+                sidebar.classList.remove('sidebar-collapsed');
+                updateState('settings', (settings) => ({
+                    ...settings,
+                    ui: { ...settings.ui, sidebarCollapsed: false }
+                }));
+            } else {
+                sidebar.classList.add('sidebar-collapsed');
+                updateState('settings', (settings) => ({
+                    ...settings,
+                    ui: { ...settings.ui, sidebarCollapsed: true }
+                }));
+            }
+        });
+        
+        // Restore sidebar state on load
+        const settings = getState('settings', {});
+        if (settings.ui?.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+        }
+    }
+
     showToast(message, type = 'info') {
         // Simple toast implementation
         const toast = document.createElement('div');
         toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 transition-all duration-300 ${
             type === 'success' ? 'bg-green-600' :
             type === 'error' ? 'bg-red-600' :
-            type === 'warning' ? 'bg-yellow-600' : 'bg-blue-600'
+            type === 'warning' ? 'bg-orange-600' : 'bg-blue-600'
         }`;
         toast.textContent = message;
         

@@ -43,6 +43,36 @@
             .settings-tab-content.hidden {
                 display: none;
             }
+            
+            /* Active tab glow effect */
+            .nav-active-glow {
+                box-shadow: 0 0 15px rgba(222, 178, 38, 0.4);
+            }
+            
+            /* Sidebar collapse animation styles */
+            .sidebar-collapsed {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar-transition {
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            /* Admin-only field styles */
+            .admin-only-field {
+                position: relative;
+            }
+            .admin-only-field.hidden-for-user {
+                display: none;
+            }
+            .admin-only-field::before {
+                content: '🔒';
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                font-size: 12px;
+                opacity: 0.6;
+            }
         </style>
 </head>
 <body class="bg-brand-bg min-h-screen font-montserrat text-white overflow-hidden">
@@ -75,7 +105,7 @@
                         <input type="password" id="loginPassword" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
                     </div>
 
-                    <button type="submit" class="w-full px-4 py-3 bg-brand-primary text-black rounded-xl font-medium hover:bg-yellow-400 transition-colors duration-200">
+                    <button type="submit" class="w-full px-4 py-3 bg-brand-primary text-black rounded-xl font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                         Sign In
                     </button>
                 </form>
@@ -104,14 +134,25 @@
 
     <div id="mainApp" class="flex h-screen hidden">
         <!-- Sidebar Navigation -->
-        <aside class="w-80 bg-brand-layer1 border-r border-brand-border flex flex-col">
+        <aside id="sidebar" class="w-80 bg-brand-layer1 border-r border-brand-border flex flex-col sidebar-transition">
             <!-- Header -->
             <header class="p-6 border-b border-brand-border bg-brand-layer2">
-                <h1 class="text-xl font-bold mb-1 tracking-wide flex items-center">
-                    <img src="images/logo.svg" alt="Guerrilla Ops Hub" class="h-8 mr-3">
-                    <span class="text-brand-primary">Guerrilla Ops Hub</span>
-                </h1>
-                <p class="text-gray-400 text-sm">Business Management Platform</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img src="images/logo.svg" alt="Guerrilla Ops Hub" class="h-8 mr-3">
+                        <div>
+                            <h1 class="text-xl font-bold mb-1 tracking-wide">
+                                <span class="text-brand-primary">Guerrilla Ops Hub</span>
+                            </h1>
+                            <p class="text-gray-400 text-sm">Business Management Platform</p>
+                        </div>
+                    </div>
+                    <button id="sidebarToggle" class="p-2 text-gray-400 hover:text-white hover:bg-brand-layer3 rounded-lg transition-colors duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                </div>
             </header>
 
             <!-- Main Navigation -->
@@ -141,7 +182,7 @@
                                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
-                                Contractors
+                                Remote Team
                             </button>
                         </div>
                     </div>
@@ -252,7 +293,7 @@
                         <h1 class="text-2xl font-semibold text-white mb-2">Team Directory</h1>
                         <p class="text-gray-400">Manage your team members and contractors</p>
                     </div>
-                    <button id="addTeamMemberBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addTeamMemberBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
@@ -277,7 +318,7 @@
                         class="team-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer3 ml-1"
                         data-tab="contractors"
                     >
-                        Contractors
+                        Remote Team
                     </button>
                 </div>
 
@@ -330,7 +371,7 @@
                 </h1>
                         <p class="text-gray-400">Manage your GM client relationships</p>
                     </div>
-                    <button id="addGMClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addGMClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <img src="images/gorilla-icon.svg" alt="Guerrilla Marketing" class="w-4 h-4 mr-2">
                         Add Client
                     </button>
@@ -390,7 +431,7 @@
                         </h1>
                         <p class="text-gray-400">Manage your Shed Geek client relationships</p>
                     </div>
-                    <button id="addSGClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addSGClientBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <img src="images/shed-icon.svg" alt="ShedGeek" class="w-4 h-4 mr-2">
                         Add Client
                     </button>
@@ -447,7 +488,7 @@
                         <h1 class="text-2xl font-semibold text-white mb-2">Training Materials</h1>
                         <p class="text-gray-400">Access training resources and documentation</p>
                     </div>
-                    <button id="addTrainingBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addTrainingBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
@@ -511,7 +552,7 @@
                         <h1 class="text-2xl font-semibold text-white mb-2">Recurring Jobs</h1>
                         <p class="text-gray-400">Manage ongoing client projects and tasks</p>
                     </div>
-                    <button id="addRecurringJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addRecurringJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
@@ -549,7 +590,7 @@
                         <h1 class="text-2xl font-semibold text-white mb-2">One-Time Jobs</h1>
                         <p class="text-gray-400">Manage single client projects and tasks</p>
                     </div>
-                    <button id="addOnetimeJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                    <button id="addOnetimeJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
@@ -598,8 +639,14 @@
                 <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="notifications">
                     Notifications
                 </button>
+                <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="appearance">
+                    Appearance
+                </button>
                 <button class="settings-tab-button px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="integrations">
                     Integrations
+                </button>
+                <button class="settings-tab-button admin-only-tab px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-300 hover:text-white hover:bg-brand-layer2 ml-1" data-tab="admin">
+                    Admin
                 </button>
             </div>
 
@@ -608,6 +655,25 @@
                 <div class="max-w-2xl">
                     <h2 class="text-lg font-semibold text-white mb-4">Profile Settings</h2>
                     <form id="profileForm" class="space-y-4">
+                        <!-- Profile Photo Upload -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-white mb-2">Profile Photo</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-20 h-20 bg-brand-layer2 rounded-full flex items-center justify-center overflow-hidden">
+                                    <img id="profilePhotoPreview" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <input type="file" id="profilePhotoInput" accept="image/*" class="hidden">
+                                    <button type="button" id="uploadPhotoBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
+                                        Upload Photo
+                                    </button>
+                                    <p class="text-xs text-gray-400 mt-1">JPG, PNG or GIF (max 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-white mb-2">Name</label>
@@ -635,7 +701,7 @@
                             <textarea id="profileNotes" rows="3" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"></textarea>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Save Profile
                             </button>
                         </div>
@@ -663,7 +729,7 @@
                             </label>
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Save Preferences
                             </button>
                         </div>
@@ -682,7 +748,7 @@
                                 <label class="block text-sm font-medium text-white mb-2">Connected Email</label>
                                 <input type="email" id="gmailEmail" placeholder="Enter Gmail address" class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
                             </div>
-                            <button id="connectGmailBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button id="connectGmailBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Connect Gmail
                             </button>
                         </div>
@@ -717,7 +783,7 @@
                                         + Add Mapping
                                     </button>
                                 </div>
-                                <button id="processSamplePayloadBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                <button id="processSamplePayloadBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                     Process Sample Payload
                                 </button>
                             </div>
@@ -764,10 +830,128 @@
                                         </label>
                                     </div>
                                 </div>
-                                <button id="testWebhooksBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                <button id="testWebhooksBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                     Test Webhooks
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appearance Tab -->
+            <div id="appearanceTab" class="settings-tab-content hidden">
+                <div class="max-w-2xl">
+                    <h2 class="text-lg font-semibold text-white mb-4">Appearance Settings</h2>
+                    <form id="appearanceForm" class="space-y-6">
+                        <!-- Color Scheme Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-3">Color Scheme</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 bg-brand-layer2 border border-brand-border rounded-lg hover:bg-brand-layer3 cursor-pointer">
+                                    <input type="radio" name="colorScheme" value="default" class="mr-3 text-brand-primary focus:ring-brand-primary">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-brand-primary rounded-full mr-3"></div>
+                                        <div>
+                                            <span class="text-white font-medium">Default (Teal)</span>
+                                            <p class="text-sm text-gray-400">Electric teal highlights with dark theme</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 bg-brand-layer2 border border-brand-border rounded-lg hover:bg-brand-layer3 cursor-pointer">
+                                    <input type="radio" name="colorScheme" value="purple" class="mr-3 text-purple-500 focus:ring-purple-500">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-purple-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <span class="text-white font-medium">Purple Storm</span>
+                                            <p class="text-sm text-gray-400">Deep purple highlights with violet accents</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 bg-brand-layer2 border border-brand-border rounded-lg hover:bg-brand-layer3 cursor-pointer">
+                                    <input type="radio" name="colorScheme" value="orange" class="mr-3 text-orange-500 focus:ring-orange-500">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-orange-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <span class="text-white font-medium">Sunset Blaze</span>
+                                            <p class="text-sm text-gray-400">Warm orange highlights with amber tones</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Theme Toggle -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-3">Theme Mode</label>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="themeMode" value="dark" class="mr-2 text-brand-primary focus:ring-brand-primary">
+                                    <span class="text-white">Dark Mode</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="themeMode" value="light" class="mr-2 text-brand-primary focus:ring-brand-primary">
+                                    <span class="text-white">Light Mode</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
+                                Save Appearance
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Tab -->
+            <div id="adminTab" class="settings-tab-content hidden admin-only-field">
+                <div class="max-w-4xl">
+                    <h2 class="text-lg font-semibold text-white mb-4">Admin Settings</h2>
+                    
+                    <!-- Webhook Management -->
+                    <div class="bg-brand-layer2 border border-brand-border rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">Webhook Management</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Master Webhook URL</label>
+                                <input type="url" id="masterWebhookUrl" placeholder="https://your-webhook-endpoint.com" class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-white mb-2">Webhook Secret Key</label>
+                                <input type="password" id="webhookSecret" placeholder="Enter secret key for verification" class="w-full px-4 py-3 bg-brand-layer1 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button id="testMasterWebhook" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors duration-200">
+                                    Test Webhook
+                                </button>
+                                <button id="saveWebhookSettings" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
+                                    Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Management -->
+                    <div class="bg-brand-layer2 border border-brand-border rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-4">User Management</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Total Users</span>
+                                <span class="text-brand-primary font-semibold" id="totalUsers">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Admin Users</span>
+                                <span class="text-brand-primary font-semibold" id="adminUsers">1</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Active Sessions</span>
+                                <span class="text-brand-primary font-semibold" id="activeSessions">1</span>
+                            </div>
+                            <button id="refreshUserStats" class="px-4 py-2 bg-brand-layer3 text-white rounded-lg font-medium hover:bg-brand-layer4 transition-colors duration-200">
+                                Refresh Statistics
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -787,7 +971,7 @@
                         <button id="refreshDataBtn" class="px-4 py-2 bg-brand-layer2 text-white border border-brand-border rounded-lg font-medium hover:bg-brand-layer3 transition-colors duration-200">
                             Refresh Data
                         </button>
-                        <button id="addTaskBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200 flex items-center">
+                        <button id="addTaskBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200 flex items-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
@@ -817,7 +1001,7 @@
             <div id="dailyPrioritiesTab" class="agenda-tab-content">
                 <div class="mb-4 flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-white">Today's Daily Priorities</h2>
-                    <button id="markTaskAsPriorityBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                    <button id="markTaskAsPriorityBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                         Mark Task as Priority
                     </button>
                 </div>
@@ -930,16 +1114,31 @@
                             <input type="text" id="editRole" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
                         </div>
 
-                        <!-- Guerrilla Email -->
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">Guerrilla Email</label>
-                            <input type="email" id="editGuerrillaEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        <!-- Personal Email (Admin Only) -->
+                        <div id="personalEmailField" class="admin-only-field">
+                            <label class="block text-sm font-medium text-white mb-2">
+                                Personal Email Address
+                                <span class="text-xs text-gray-400 block mt-1">Only visible to administrators</span>
+                            </label>
+                            <input type="email" id="editPersonalEmail" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
                         </div>
 
-                        <!-- Shed Geek Email -->
-                        <div>
-                            <label class="block text-sm font-medium text-white mb-2">Shed Geek Email</label>
-                            <input type="email" id="editShedGeekEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        <!-- Company Email Addresses -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-white mb-3">Company Email Address(es)</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Guerrilla Email -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-300 mb-2">Guerrilla Email</label>
+                                    <input type="email" id="editGuerrillaEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                </div>
+
+                                <!-- Shed Geek Email -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-300 mb-2">Shed Geek Email</label>
+                                    <input type="email" id="editShedGeekEmail" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Location -->
@@ -994,7 +1193,7 @@
                             <button type="button" id="cancelEditBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Save Member
                             </button>
                         </div>
@@ -1082,7 +1281,7 @@
                             <button type="button" id="cancelEditClientBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Save Client
                             </button>
                         </div>
@@ -1187,7 +1386,7 @@
                                 <textarea id="quickAddNote" rows="3" placeholder="Add a quick note..." class="w-full px-3 py-2 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-brand-primary"></textarea>
                             </div>
                             <div class="flex justify-end">
-                                <button id="saveQuickNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                <button id="saveQuickNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                     Add Note
                                 </button>
                             </div>
@@ -1201,7 +1400,7 @@
                 <div id="clientJobsTab" class="client-detail-tab-content hidden">
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-white">Client Jobs</h3>
-                        <button id="addClientJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addClientJobBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Job
                         </button>
                     </div>
@@ -1214,7 +1413,7 @@
                 <div id="clientContactsTab" class="client-detail-tab-content hidden">
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-white">Client Contacts</h3>
-                        <button id="addClientContactBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addClientContactBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Contact
                         </button>
                     </div>
@@ -1238,7 +1437,7 @@
                         <div>
                             <div class="mb-4 flex items-center justify-between">
                                 <h3 class="text-lg font-semibold text-white">Digital Assets</h3>
-                                <button id="addDigitalAssetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                <button id="addDigitalAssetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                     Add Asset
                                 </button>
                             </div>
@@ -1251,7 +1450,7 @@
                         <div>
                             <div class="mb-4 flex items-center justify-between">
                                 <h3 class="text-lg font-semibold text-white">Budgets</h3>
-                                <button id="addBudgetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                                <button id="addBudgetBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                     Add Budget
                                 </button>
                             </div>
@@ -1270,7 +1469,7 @@
                 <div id="clientNotesTab" class="client-detail-tab-content hidden">
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-white">All Notes</h3>
-                        <button id="addNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addNoteBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Note
                         </button>
                     </div>
@@ -1283,7 +1482,7 @@
                 <div id="clientMeetingTranscriptionsTab" class="client-detail-tab-content hidden">
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-white">Meeting Transcriptions</h3>
-                        <button id="addMeetingTranscriptionBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button id="addMeetingTranscriptionBtn" class="px-4 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Add Transcription
                         </button>
                     </div>
@@ -1301,7 +1500,7 @@
                         <button type="button" id="cancelClientDetailBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                             Cancel
                         </button>
-                        <button type="button" id="saveClientDetailBtn" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                        <button type="button" id="saveClientDetailBtn" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                             Save Changes
                         </button>
                     </div>
@@ -1392,7 +1591,7 @@
                             <button type="button" id="cancelEditTrainingBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Save Material
                             </button>
                         </div>
@@ -1521,7 +1720,7 @@
                             <button type="button" id="cancelAddDailyPriorityBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Priority
                             </button>
                         </div>
@@ -1557,7 +1756,7 @@
                             <button type="button" id="cancelTaskTemplateBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Execute Template
                             </button>
                         </div>
@@ -1636,7 +1835,7 @@
                             <button type="button" id="cancelAddDigitalAssetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Asset
                             </button>
                         </div>
@@ -1673,7 +1872,7 @@
                             <button type="button" id="cancelAddNoteBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Note
                             </button>
                         </div>
@@ -1735,7 +1934,7 @@
                             <button type="button" id="cancelAddMeetingTranscriptionBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Transcription
                             </button>
                         </div>
@@ -1797,7 +1996,7 @@
                             <button type="button" id="cancelAddTaskBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Task
                             </button>
                         </div>
@@ -1843,7 +2042,7 @@
                             <button type="button" id="cancelMarkTaskAsPriorityBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Mark as Priority
                             </button>
                         </div>
@@ -1890,6 +2089,14 @@
                             </select>
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-white mb-2">Start Date</label>
+                            <input type="date" id="recurringJobStartDate" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">End Date</label>
+                            <input type="date" id="recurringJobEndDate" class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-white mb-2">Next Due Date</label>
                             <input type="date" id="recurringJobNextDue" required class="w-full px-4 py-3 bg-brand-layer2 border border-brand-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
                         </div>
@@ -1905,7 +2112,7 @@
                             <button type="button" id="cancelAddRecurringJobBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Job
                             </button>
                         </div>
@@ -1967,7 +2174,7 @@
                             <button type="button" id="cancelAddOnetimeJobBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Job
                             </button>
                         </div>
@@ -2051,7 +2258,7 @@
                             <button type="button" id="cancelAddClientContactBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Contact
                             </button>
                         </div>
@@ -2117,7 +2324,7 @@
                             <button type="button" id="cancelAddDigitalAssetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Asset
                             </button>
                         </div>
@@ -2182,7 +2389,7 @@
                             <button type="button" id="cancelAddBudgetBtn" class="px-6 py-2 border border-brand-border text-gray-300 rounded-lg font-medium hover:bg-brand-layer2 transition-colors duration-200">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-yellow-400 transition-colors duration-200">
+                            <button type="submit" class="px-6 py-2 bg-brand-primary text-black rounded-lg font-medium hover:bg-brand-primary-dark transition-colors duration-200">
                                 Add Budget
                             </button>
                         </div>
